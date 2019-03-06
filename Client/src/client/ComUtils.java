@@ -9,11 +9,15 @@ public class ComUtils {
     /* Mida d'una cadena de caracters */
     private final int STRSIZE = 40;
     /* Objectes per escriure i llegir dades */
-    private DataInputStream dis;
-    private DataOutputStream dos;
+    private DataInputStream dataInputStream;
+    private DataOutputStream dataOutputStream;
 
+    public ComUtils(InputStream inputStream, OutputStream outputStream) throws IOException {
+        dataInputStream = new DataInputStream(inputStream);
+        dataOutputStream = new DataOutputStream(outputStream);
+    }
 
-
+    /*
     public ComUtils(Socket socket) throws IOException{
         dis = new DataInputStream(socket.getInputStream());
         dos = new DataOutputStream(socket.getOutputStream());
@@ -24,9 +28,9 @@ public class ComUtils {
         dis = new DataInputStream(new FileInputStream(file));
         dos = new DataOutputStream(new FileOutputStream(file));
     }
+    */
 
-
-
+    /*
     public static void main(String[] args) {
         File file = new File("test.txt");
         try {
@@ -41,6 +45,7 @@ public class ComUtils {
             e.printStackTrace();
         }
     }
+    */
 
 
 
@@ -58,37 +63,36 @@ public class ComUtils {
 
 
 
-
     /* Llegir un enter de 32 bits */
-    public int read_int32() throws IOException{
-        byte bytes[] = new byte[4];
-        bytes  = read_bytes(4);
+    public int read_int32() throws IOException {
+        byte bytes[] = read_bytes(4);
 
-        return bytesToInt32(bytes,"be");
+        return bytesToInt32(bytes,Endianness.BIG_ENNDIAN);
     }
+
 
     /* Escriure un enter de 32 bits */
-    public void write_int32(int number) throws IOException{
-        byte bytes[]=new byte[4];
+    public void write_int32(int number) throws IOException {
+        byte bytes[] = int32ToBytes(number, Endianness.BIG_ENNDIAN);
 
-        int32ToBytes(number,bytes,"be");
-        dos.write(bytes, 0, 4);
+        dataOutputStream.write(bytes, 0, 4);
     }
+
 
     /* Llegir un string de mida STRSIZE */
     public String read_string() throws IOException{
-        String str;
-        byte bStr[] = new byte[STRSIZE];
-        char cStr[] = new char[STRSIZE];
+        String result;
+        byte[] bStr = new byte[STRSIZE];
+        char[] cStr = new char[STRSIZE];
 
         bStr = read_bytes(STRSIZE);
 
         for(int i = 0; i < STRSIZE;i++)
             cStr[i]= (char) bStr[i];
 
-        str = String.valueOf(cStr);
+        result = String.valueOf(cStr);
 
-        return str.trim();
+        return result.trim();
     }
 
     /* Escriure un string */
@@ -109,35 +113,37 @@ public class ComUtils {
         for(int i = numBytes; i < STRSIZE; i++)
             bStr[i] = (byte) ' ';
 
-        dos.write(bStr, 0,STRSIZE);
+        dataOutputStream.write(bStr, 0,STRSIZE);
     }
 
     /* Passar d'enters a bytes */
-    private int int32ToBytes(int number,byte bytes[], String endianess){
-        if("be".equals(endianess.toLowerCase())){
+    private byte[] int32ToBytes(int number, Endianness endianness) {
+        byte[] bytes = new byte[4];
+
+        if(Endianness.BIG_ENNDIAN == endianness) {
             bytes[0] = (byte)((number >> 24) & 0xFF);
             bytes[1] = (byte)((number >> 16) & 0xFF);
             bytes[2] = (byte)((number >> 8) & 0xFF);
             bytes[3] = (byte)(number & 0xFF);
         }
-        else{
+        else {
             bytes[0] = (byte)(number & 0xFF);
             bytes[1] = (byte)((number >> 8) & 0xFF);
             bytes[2] = (byte)((number >> 16) & 0xFF);
             bytes[3] = (byte)((number >> 24) & 0xFF);
         }
-        return 4;
+        return bytes;
     }
 
     /* Passar de bytes a enters */
-    private int bytesToInt32(byte bytes[], String endianess){
+    private int bytesToInt32(byte bytes[], Endianness endianness) {
         int number;
 
-        if("be".equals(endianess.toLowerCase())){
+        if(Endianness.BIG_ENNDIAN == endianness) {
             number=((bytes[0] & 0xFF) << 24) | ((bytes[1] & 0xFF) << 16) |
                     ((bytes[2] & 0xFF) << 8) | (bytes[3] & 0xFF);
         }
-        else{
+        else {
             number=(bytes[0] & 0xFF) | ((bytes[1] & 0xFF) << 8) |
                     ((bytes[2] & 0xFF) << 16) | ((bytes[3] & 0xFF) << 24);
         }
@@ -145,12 +151,12 @@ public class ComUtils {
     }
 
     //llegir bytes.
-    private byte[] read_bytes(int numBytes) throws IOException{
-        int len=0 ;
+    private byte[] read_bytes(int numBytes) throws IOException {
+        int len = 0;
         byte bStr[] = new byte[numBytes];
-        int bytesread=0;
+        int bytesread = 0;
         do {
-            bytesread= dis.read(bStr, len, numBytes-len);
+            bytesread = dataInputStream.read(bStr, len, numBytes-len);
             if (bytesread == -1)
                 throw new IOException("Broken Pipe");
             len += bytesread;
@@ -159,10 +165,10 @@ public class ComUtils {
     }
 
     /* Llegir un string  mida variable size = nombre de bytes especifica la longitud*/
-    public  String read_string_variable(int size) throws IOException{
-        byte bHeader[]=new byte[size];
-        char cHeader[]=new char[size];
-        int numBytes=0;
+    public  String read_string_variable(int size) throws IOException {
+        byte bHeader[] = new byte[size];
+        char cHeader[] = new char[size];
+        int numBytes = 0;
 
         // Llegim els bytes que indiquen la mida de l'string
         bHeader = read_bytes(size);
@@ -182,7 +188,8 @@ public class ComUtils {
 
     /* Escriure un string mida variable, size = nombre de bytes especifica la longitud  */
     /* String str = string a escriure.*/
-    public  void write_string_variable(int size,String str) throws IOException{
+    public void write_string_variable(int size,String str) throws IOException {
+
         // Creem una seqüència amb la mida
         byte bHeader[]=new byte[size];
         String strHeader;
@@ -199,10 +206,11 @@ public class ComUtils {
         for(int i=0;i<size;i++)
             bHeader[i]=(byte)strHeader.charAt(i);
         // Enviem la capçalera
-        dos.write(bHeader, 0, size);
+        dataOutputStream.write(bHeader, 0, size);
         // Enviem l'string writeBytes de DataOutputStrem no envia el byte més alt dels chars.
-        dos.writeBytes(str);
+        dataOutputStream.writeBytes(str);
     }
+
 
     public void writeChar(String s) throws IOException{
         byte bStr[] = new byte[2];/*1 char = 16 bits!!!!!!!!!*/
@@ -210,7 +218,7 @@ public class ComUtils {
 
         bStr[0] = (byte) str.charAt(0);
 
-        dos.write(bStr, 0, 1);
+        dataOutputStream.write(bStr, 0, 1);
     }
 
     public String readChar() throws IOException {
@@ -257,7 +265,7 @@ public class ComUtils {
 
         bStr[0] = (byte) str.charAt(0);
 
-        dos.write(bStr, 0, 1);
+        dataOutputStream.write(bStr, 0, 1);
     }
 
 
@@ -290,7 +298,7 @@ public class ComUtils {
         for(int i = numBytes; i < 3; i++)
             bStr[i] = (byte) ' ';
 
-        dos.write(bStr, 0,3);
+        dataOutputStream.write(bStr, 0,3);
     }
 
     public String readCommand3() throws IOException{
@@ -308,23 +316,6 @@ public class ComUtils {
         return str.trim();
     }
 
-
-    // Write i Read de la comanda PLY
-    public void writePLY() throws IOException{
-        writeCommand3("PLY");
-    }
-    public String readPLY() throws IOException{
-        return readCommand3();
-    }
-
-
-    // Write i Read de la comanda STP
-    public void writeSTP() throws IOException{
-        writeCommand3("STP");
-    }
-    public String readSTP() throws IOException{
-        return readCommand3();
-    }
 
 
     public void writeCommand(String command) throws IOException{
@@ -371,8 +362,6 @@ public class ComUtils {
 
 
 
-
-
     public int string2int(String myString){
         int i = Integer.parseInt(myString);
         return i;
@@ -408,7 +397,10 @@ public class ComUtils {
 
 
 
-
+    public enum Endianness {
+        BIG_ENNDIAN,
+        LITTLE_ENDIAN
+    }
 
 
 }

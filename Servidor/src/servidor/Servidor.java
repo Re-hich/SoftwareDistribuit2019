@@ -8,7 +8,7 @@ import java.net.*;
 
 public class Servidor {
 
-    private static ComUtilsServidorv2 comUtils;
+    private static ComUtils comUtils;
 
 
     public static void main(String[] args) {
@@ -44,7 +44,7 @@ public class Servidor {
                 System.out.println("Connexió acceptada d'un client.");
 
                 /* Associem un flux d'entrada/sortida amb el client */
-                comUtils = new ComUtilsServidorv2(socket);
+                comUtils = new ComUtils(socket.getInputStream(), socket.getOutputStream());
 
                 /* Esperem una comanda */
                 str = comUtils.readCommand();
