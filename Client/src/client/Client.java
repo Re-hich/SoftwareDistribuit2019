@@ -2,7 +2,6 @@ package client;
 
 import java.io.*;
 import java.net.*;
-import java.util.Scanner;
 
 
 public class Client {
@@ -11,7 +10,7 @@ public class Client {
     int port;
     int stack;
     String trun;
-    ComUtils comUtils;
+    ComUtilsClientv2 comUtils;
 
     public Client(int UID,String ms, int port) {
         this.UID = UID;
@@ -28,7 +27,7 @@ public class Client {
             ms = InetAddress.getByName(maquinaServidora);
             socket = new Socket(ms,port);
             /* Obrim un flux d'entrada/sortida amb el servidor */
-            comUtils = new ComUtils(socket);
+            comUtils = new ComUtilsClientv2(socket);
             System.out.println("Se ha establecido conexion");
         }
         catch(IOException e){
@@ -39,7 +38,7 @@ public class Client {
     }
 
 
-    public ComUtils getComUtils() {
+    public ComUtilsClientv2 getComUtils() {
         return comUtils;
     }
 

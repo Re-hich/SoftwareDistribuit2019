@@ -4,7 +4,7 @@ package client;//import com.oracle.jrockit.jfr.ContentType;
 import java.io.*;
 import java.net.Socket;
 
-public class ComUtils {
+public class ComUtilsClientv2 {
 
     /* Mida d'una cadena de caracters */
     private final int STRSIZE = 40;
@@ -14,13 +14,13 @@ public class ComUtils {
 
 
 
-    public ComUtils(Socket socket) throws IOException{
+    public ComUtilsClientv2(Socket socket) throws IOException{
         dis = new DataInputStream(socket.getInputStream());
         dos = new DataOutputStream(socket.getOutputStream());
     }
 
 
-    public ComUtils(File file) throws IOException{
+    public ComUtilsClientv2(File file) throws IOException{
         dis = new DataInputStream(new FileInputStream(file));
         dos = new DataOutputStream(new FileOutputStream(file));
     }

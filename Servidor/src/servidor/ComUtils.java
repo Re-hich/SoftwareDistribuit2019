@@ -3,7 +3,7 @@ package servidor;
 
 //import com.oracle.jrockit.jfr.ContentType;
 //import static com.oracle.jrockit.jfr.ContentType.None;
-import static com.sun.org.apache.xml.internal.utils.XMLCharacterRecognizer.isWhiteSpace;
+//import static com.sun.org.apache.xml.internal.utils.XMLCharacterRecognizer.isWhiteSpace;
 import java.net.*;
 import java.io.*;
 import java.util.Locale;
@@ -330,10 +330,10 @@ public class ComUtils{
         return readCommand3();
     }
 
-
+/*
     public void writeCommand(String command) throws IOException{
         switch(command) {
-            /* Cas en el que enviem la comanda Play */
+            /* Cas en el que enviem la comanda Play *
             case "PLY":
                 //System.out.println("prova a comutils");
                 write_string("PLY");
@@ -367,6 +367,7 @@ public class ComUtils{
         }
     }
 
+    */
 
     public String readCommand() throws IOException{
         String value = read_string();

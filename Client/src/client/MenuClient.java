@@ -33,17 +33,17 @@ public class MenuClient {
         this.ctr.iniClient(IDU, ms, port);
 
 
-        System.out.println("\nComanda a enviar: PLY/STP");
+        System.out.println("\nComanda a enviar: STRT/EXIT");
         String c = sc.next();
 
         switch(c){
-            case "PLY":
-                //this.ctr.getClient().getComUtils().writePLY();
+            case "STRT":
+                this.ctr.getClient().getComUtils().writeCommand("STRT");
                 //menuPlay(sc);
                 break;
 
-            case "STP":
-                //this.ctr.getClient().getComUtils().writeSTP();
+            case "EXIT":
+                this.ctr.getClient().getComUtils().writeCommand("EXIT");
                 break;
         }
 

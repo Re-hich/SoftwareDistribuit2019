@@ -3,12 +3,12 @@ package servidor;
 
 //import com.oracle.jrockit.jfr.ContentType;
 //import static com.oracle.jrockit.jfr.ContentType.None;
-import static com.sun.org.apache.xml.internal.utils.XMLCharacterRecognizer.isWhiteSpace;
+//import static com.sun.org.apache.xml.internal.utils.XMLCharacterRecognizer.isWhiteSpace;
 import java.net.*;
 import java.io.*;
 import java.util.Locale;
 
-public class ComUtils{
+public class ComUtilsServidorv2{
 
     /* Mida d'una cadena de caracters */
     private final int STRSIZE = 40;
@@ -18,13 +18,13 @@ public class ComUtils{
 
 
 
-    public ComUtils(Socket socket) throws IOException{
+    public ComUtilsServidorv2(Socket socket) throws IOException{
         dis = new DataInputStream(socket.getInputStream());
         dos = new DataOutputStream(socket.getOutputStream());
     }
 
 
-    public ComUtils(File file) throws IOException{
+    public ComUtilsServidorv2(File file) throws IOException{
         dis = new DataInputStream(new FileInputStream(file));
         dos = new DataOutputStream(new FileOutputStream(file));
     }
@@ -332,9 +332,10 @@ public class ComUtils{
     }*/
 
 
+    /*
     public void writeCommand(String command) throws IOException{
         switch(command) {
-            /* Cas en el que enviem la comanda Play */
+            /* Cas en el que enviem la comanda Play *
             case "INIT":
                 //System.out.println("prova a comutils");
                 write_string("INIT");
@@ -362,6 +363,7 @@ public class ComUtils{
 
         }
     }
+    */
 
 
     public String readCommand() throws IOException{
@@ -406,10 +408,10 @@ public class ComUtils{
     }
 
 
-	public enum Endianness {
-        BIG_ENNDIAN,
-        LITTLE_ENDIAN
-    }
+	//public enum Endianness {
+    //    BIG_ENNDIAN,
+    //    LITTLE_ENDIAN
+    //}
 
 
 

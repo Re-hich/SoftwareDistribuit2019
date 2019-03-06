@@ -8,7 +8,7 @@ import java.net.*;
 
 public class Servidor {
 
-    private static ComUtils comUtils;
+    private static ComUtilsServidorv2 comUtils;
 
 
     public static void main(String[] args) {
@@ -44,7 +44,7 @@ public class Servidor {
                 System.out.println("Connexió acceptada d'un client.");
 
                 /* Associem un flux d'entrada/sortida amb el client */
-                comUtils = new ComUtils(socket);
+                comUtils = new ComUtilsServidorv2(socket);
 
                 /* Esperem una comanda */
                 str = comUtils.readCommand3();
@@ -53,7 +53,8 @@ public class Servidor {
 
 
                 switch(str){
-                    case "PLY":
+                    case "STRT":
+                        System.out.println("Game started");
                         /*
                         System.out.println("Anem a començar el joc");
                         prova = new EstatJoc(10,10);
@@ -80,10 +81,13 @@ public class Servidor {
 
                         break;
 
-                    case "STP":
+                    case "EXIT":
+                        System.out.println("Bye");
+
 
                         break;
                 }
+
 
 
 
