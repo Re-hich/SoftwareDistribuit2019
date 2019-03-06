@@ -47,14 +47,22 @@ public class Servidor {
                 comUtils = new ComUtilsServidorv2(socket);
 
                 /* Esperem una comanda */
-                str = comUtils.readCommand3();
+                str = comUtils.readCommand();
                 System.out.println("Em llegit la comanda: "+str);
+                String sp = comUtils.read_space();
+                System.out.println(sp);
+                int id = comUtils.read_int32();
+                System.out.println("ID: "+id);
 
 
 
-                switch(str){
-                    case "STRT":
-                        System.out.println("Game started");
+
+
+                //switch(str){
+                //    case "STRT":
+
+                if ("STRT".equals(str)) {
+                    System.out.println("Game started");
                         /*
                         System.out.println("Anem a començar el joc");
                         prova = new EstatJoc(10,10);
@@ -79,13 +87,11 @@ public class Servidor {
 
                         */
 
-                        break;
 
-                    case "EXIT":
-                        System.out.println("Bye");
+                } else if ("EXIT".equals(str)) {
+                    System.out.println("Bye");
 
 
-                        break;
                 }
 
 

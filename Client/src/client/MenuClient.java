@@ -36,9 +36,16 @@ public class MenuClient {
         System.out.println("\nComanda a enviar: STRT/EXIT");
         String c = sc.next();
 
+
         switch(c){
             case "STRT":
+                System.out.println("\nIntrodueix numero de usuari");
+                String id = sc.next();
+                int a = this.ctr.getClient().getComUtils().string2int(id);
                 this.ctr.getClient().getComUtils().writeCommand("STRT");
+                this.ctr.getClient().getComUtils().write_space();
+                this.ctr.getClient().getComUtils().write_int32(a);
+
                 //menuPlay(sc);
                 break;
 

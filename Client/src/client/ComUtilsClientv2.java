@@ -319,12 +319,12 @@ public class ComUtilsClientv2 {
 
 
     // Write i Read de la comanda STP
-    /*public void writeSTP() throws IOException{
+    public void writeSTP() throws IOException{
         writeCommand3("STP");
     }
     public String readSTP() throws IOException{
         return readCommand3();
-    }*/
+    }
 
 
     public void writeCommand(String command) throws IOException{
