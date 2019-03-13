@@ -4,7 +4,7 @@ package client;//import com.oracle.jrockit.jfr.ContentType;
 import java.io.*;
 import java.net.Socket;
 
-public class ComUtils {
+public class ComUtilsClientv2 {
 
     /* Mida d'una cadena de caracters */
     private final int STRSIZE = 40;
@@ -14,13 +14,13 @@ public class ComUtils {
 
 
 
-    public ComUtils(Socket socket) throws IOException{
+    public ComUtilsClientv2(Socket socket) throws IOException{
         dis = new DataInputStream(socket.getInputStream());
         dos = new DataOutputStream(socket.getOutputStream());
     }
 
 
-    public ComUtils(File file) throws IOException{
+    public ComUtilsClientv2(File file) throws IOException{
         dis = new DataInputStream(new FileInputStream(file));
         dos = new DataOutputStream(new FileOutputStream(file));
     }
@@ -275,32 +275,32 @@ public class ComUtils {
     // Escribim una comanda de 3 lletres
     public void writeCommand3(String str) throws IOException{
         int numBytes, lenStr;
-        byte bStr[] = new byte[3];
+        byte bStr[] = new byte[4];
 
         lenStr = str.length();
 
-        if (lenStr > 3)
-            numBytes = 3;
+        if (lenStr > 4)
+            numBytes = 4;
         else
             numBytes = lenStr;
 
         for(int i = 0; i < numBytes; i++)
             bStr[i] = (byte) str.charAt(i);
 
-        for(int i = numBytes; i < 3; i++)
+        for(int i = numBytes; i < 4; i++)
             bStr[i] = (byte) ' ';
 
-        dos.write(bStr, 0,3);
+        dos.write(bStr, 0,4);
     }
 
     public String readCommand3() throws IOException{
         String str;
-        byte bStr[] = new byte[3];
-        char cStr[] = new char[3];
+        byte bStr[] = new byte[4];
+        char cStr[] = new char[4];
 
-        bStr = read_bytes(3);
+        bStr = read_bytes(4);
 
-        for(int i = 0; i < 3;i++)
+        for(int i = 0; i < 4;i++)
             cStr[i]= (char) bStr[i];
 
         str = String.valueOf(cStr);
@@ -310,12 +310,12 @@ public class ComUtils {
 
 
     // Write i Read de la comanda PLY
-    public void writePLY() throws IOException{
+    /*public void writePLY() throws IOException{
         writeCommand3("PLY");
     }
     public String readPLY() throws IOException{
         return readCommand3();
-    }
+    }*/
 
 
     // Write i Read de la comanda STP
@@ -330,34 +330,63 @@ public class ComUtils {
     public void writeCommand(String command) throws IOException{
         switch(command) {
             /* Cas en el que enviem la comanda Play */
-            case "PLY":
+            case "STRT":
                 //System.out.println("prova a comutils");
-                write_string("PLY");
+                write_string("STRT");
                 break;
 
             // Cas en el que enviem la comanda Stop
-            case "STP":
-                write_string("STP");
+            case "EXIT":
+                write_string("EXIT");
                 break;
 
             // Cas en el que enviem la comanda Bet
-            case "BET":
-                write_string("BET");
+            case "CASH":
+                write_string("CASH");
                 break;
 
             // Cas en el que enviem la comanda Call
-            case "CAL":
-                write_string("CAL");
+            case "HITT":
+                write_string("HITT");
                 break;
 
             // Cas en el que enviem la comanda Fold
-            case "FLD":
-                write_string("FLD");
+            case "SHOW":
+                write_string("SHOW");
                 break;
 
             // Cas en el que enviem la comanda Check
-            case "CHK":
-                write_string("CHK");
+            case "BETT":
+                write_string("BETT");
+                break;
+				
+			case "CHK":
+                write_string("SRND");
+                break;
+
+			case "RPLY":
+                write_string("RPLY");
+                break;
+                
+              /* Cas en el que enviem la comanda Play **/
+            case "INIT":
+                //System.out.println("prova a comutils");
+                write_string("INIT");
+                break;
+
+            // Cas en el que enviem la comanda Stop
+            case "IDCK":
+                write_string("IDCK");
+                break;
+
+            // Cas en el que enviem la comanda Bet
+            case "CARD":
+                write_string("CARD");
+                break;
+                
+            // Cas en el que enviem la comanda Fold
+            case "WINS":
+                write_string("WINS");
                 break;
 
         }
@@ -405,9 +434,81 @@ public class ComUtils {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    pubic void writeSTRT(String a) throws IOException{
+
+    writeCommand("STRT");
+    write_space();
+    write_int32(a);
+                
+    }
+    pubic void writeEXIT(String a) throws IOException{
+
+        writeCommand("EXIT");
+        
+    }
+    pubic void writeCASH(String a) throws IOException{
+
+        writeCommand("CASH");
+        write_space();
+        write_int32(a);
+                    
+    }
+    pubic void writeHITT(String a) throws IOException{
+
+        writeCommand("HITT");
+        
+    }
+    pubic void writeBETT(String a) throws IOException{
+
+        writeCommand("BETT");
+        
+    }
+    pubic void writeSRND(String a) throws IOException{
+
+        writeCommand("SRND");
+        
+    }
+    pubic void writeRPLY(String a) throws IOException{
+
+        writeCommand("RPLY");
+        
+    }
+    pubic void writeIDCK(String a) throws IOException{
+
+        writeCommand("IDCK");
+        write_space();
+        //FALT VER COM PASAMOS LAS CARTAS
+        write_space();
+    }
+    pubic void writeCARD(String a) throws IOException{
+
+        writeCommand("CARD");
+        write_space();
+        //FALT VER COM PASAMOS LAS CARTAS
+        
+    }
+    pubic void writeSHOW(String a) throws IOException{
+
+        writeCommand("SHOW");
+        write_space();
+        //FALT VER COM PASAMOS LAS CARTAS
+        
+    }
+    pubic void writeWINS(String a) throws IOException{
+
+        writeCommand("WINS");
+        write_space();
+        writeChar(b);
+        write_space();
+        write_int32(a);
+    }
 
 
 
+	public enum Endianness {
+        BIG_ENNDIAN,
+        LITTLE_ENDIAN
+    }
 
 
 

@@ -30,7 +30,7 @@ public class MenuClient {
 
 
     private void showMenu(Scanner sc,int IDU, String ms, int port) throws IOException{
-        this.ctr.iniClient(IDU, ms, port);
+       this.ctr.iniClient(IDU, ms, port);
 
 
         System.out.println("\nComanda a enviar: STRT/EXIT");
@@ -42,16 +42,36 @@ public class MenuClient {
                 System.out.println("\nIntrodueix numero de usuari");
                 String id = sc.next();
                 int a = this.ctr.getClient().getComUtils().string2int(id);
-                this.ctr.getClient().getComUtils().writeCommand("STRT");
-                this.ctr.getClient().getComUtils().write_space();
-                this.ctr.getClient().getComUtils().write_int32(a);
+                this.ctr.getClient().getComUtils().writeSTRT(a)
 
                 //menuPlay(sc);
                 break;
 
             case "EXIT":
-                this.ctr.getClient().getComUtils().writeCommand("EXIT");
+                this.ctr.getClient().getComUtils().writeEXIT()
                 break;
+                
+            case "CASH":
+                System.out.println("\nQuantes fitxes vols canviar?");
+                String id = sc.next();
+                int a = this.ctr.getClient().getComUtils().string2int(id);
+                this.ctr.getClient().getComUtils().writeCASH(a)
+                break;
+                
+            case "HITT":
+                this.ctr.getClient().getComUtils().writeHITT()
+                break;
+            
+            case "BETT":
+                this.ctr.getClient().getComUtils().writeBETT()
+                break;
+            case "SRND":
+                this.ctr.getClient().getComUtils().writeSRND()
+                break;
+            case "RPLY":
+                this.ctr.getClient().getComUtils().writeRPLY()
+                break;
+            
         }
 
 
