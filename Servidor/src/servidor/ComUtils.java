@@ -9,20 +9,25 @@ public class ComUtils {
     /* Mida d'una cadena de caracters */
     private final int STRSIZE = 40;
     /* Objectes per escriure i llegir dades */
-    private DataInputStream dis;
-    private DataOutputStream dos;
+    private DataInputStream dataInputStream;
+    private DataOutputStream dataOutputStream;
 
+
+    public ComUtils(InputStream inputStream, OutputStream outputStream) throws IOException {
+        dataInputStream = new DataInputStream(inputStream);
+        dataOutputStream = new DataOutputStream(outputStream);
+    }
 
 
     public ComUtils(Socket socket) throws IOException{
-        dis = new DataInputStream(socket.getInputStream());
-        dos = new DataOutputStream(socket.getOutputStream());
+        dataInputStream = new DataInputStream(socket.getInputStream());
+        dataOutputStream = new DataOutputStream(socket.getOutputStream());
     }
 
 
     public ComUtils(File file) throws IOException{
-        dis = new DataInputStream(new FileInputStream(file));
-        dos = new DataOutputStream(new FileOutputStream(file));
+        dataInputStream = new DataInputStream(new FileInputStream(file));
+        dataOutputStream = new DataOutputStream(new FileOutputStream(file));
     }
 
 
@@ -61,34 +66,32 @@ public class ComUtils {
 
     /* Llegir un enter de 32 bits */
     public int read_int32() throws IOException{
-        byte bytes[] = new byte[4];
-        bytes  = read_bytes(4);
+        byte bytes[] = read_bytes(4);
 
-        return bytesToInt32(bytes,"be");
+        return bytesToInt32(bytes,Endianness.BIG_ENNDIAN);
     }
 
     /* Escriure un enter de 32 bits */
     public void write_int32(int number) throws IOException{
-        byte bytes[]=new byte[4];
+        byte bytes[] = int32ToBytes(number, Endianness.BIG_ENNDIAN);
 
-        int32ToBytes(number,bytes,"be");
-        dos.write(bytes, 0, 4);
+        dataOutputStream.write(bytes, 0, 4);
     }
 
     /* Llegir un string de mida STRSIZE */
     public String read_string() throws IOException{
-        String str;
-        byte bStr[] = new byte[STRSIZE];
-        char cStr[] = new char[STRSIZE];
+        String result;
+        byte[] bStr = new byte[STRSIZE];
+        char[] cStr = new char[STRSIZE];
 
         bStr = read_bytes(STRSIZE);
 
         for(int i = 0; i < STRSIZE;i++)
             cStr[i]= (char) bStr[i];
 
-        str = String.valueOf(cStr);
+        result = String.valueOf(cStr);
 
-        return str.trim();
+        return result.trim();
     }
 
     /* Escriure un string */
@@ -109,35 +112,37 @@ public class ComUtils {
         for(int i = numBytes; i < STRSIZE; i++)
             bStr[i] = (byte) ' ';
 
-        dos.write(bStr, 0,STRSIZE);
+        dataOutputStream.write(bStr, 0,STRSIZE);
     }
 
     /* Passar d'enters a bytes */
-    private int int32ToBytes(int number,byte bytes[], String endianess){
-        if("be".equals(endianess.toLowerCase())){
+    private byte[] int32ToBytes(int number, Endianness endianness) {
+        byte[] bytes = new byte[4];
+
+        if(Endianness.BIG_ENNDIAN == endianness) {
             bytes[0] = (byte)((number >> 24) & 0xFF);
             bytes[1] = (byte)((number >> 16) & 0xFF);
             bytes[2] = (byte)((number >> 8) & 0xFF);
             bytes[3] = (byte)(number & 0xFF);
         }
-        else{
+        else {
             bytes[0] = (byte)(number & 0xFF);
             bytes[1] = (byte)((number >> 8) & 0xFF);
             bytes[2] = (byte)((number >> 16) & 0xFF);
             bytes[3] = (byte)((number >> 24) & 0xFF);
         }
-        return 4;
+        return bytes;
     }
 
     /* Passar de bytes a enters */
-    private int bytesToInt32(byte bytes[], String endianess){
+    private int bytesToInt32(byte bytes[], Endianness endianness) {
         int number;
 
-        if("be".equals(endianess.toLowerCase())){
+        if(Endianness.BIG_ENNDIAN == endianness) {
             number=((bytes[0] & 0xFF) << 24) | ((bytes[1] & 0xFF) << 16) |
                     ((bytes[2] & 0xFF) << 8) | (bytes[3] & 0xFF);
         }
-        else{
+        else {
             number=(bytes[0] & 0xFF) | ((bytes[1] & 0xFF) << 8) |
                     ((bytes[2] & 0xFF) << 16) | ((bytes[3] & 0xFF) << 24);
         }
@@ -145,12 +150,12 @@ public class ComUtils {
     }
 
     //llegir bytes.
-    private byte[] read_bytes(int numBytes) throws IOException{
-        int len=0 ;
+    private byte[] read_bytes(int numBytes) throws IOException {
+        int len = 0;
         byte bStr[] = new byte[numBytes];
-        int bytesread=0;
+        int bytesread = 0;
         do {
-            bytesread= dis.read(bStr, len, numBytes-len);
+            bytesread = dataInputStream.read(bStr, len, numBytes-len);
             if (bytesread == -1)
                 throw new IOException("Broken Pipe");
             len += bytesread;
@@ -159,10 +164,10 @@ public class ComUtils {
     }
 
     /* Llegir un string  mida variable size = nombre de bytes especifica la longitud*/
-    public  String read_string_variable(int size) throws IOException{
-        byte bHeader[]=new byte[size];
-        char cHeader[]=new char[size];
-        int numBytes=0;
+    public  String read_string_variable(int size) throws IOException {
+        byte bHeader[] = new byte[size];
+        char cHeader[] = new char[size];
+        int numBytes = 0;
 
         // Llegim els bytes que indiquen la mida de l'string
         bHeader = read_bytes(size);
@@ -179,6 +184,7 @@ public class ComUtils {
             cStr[i]=(char)bStr[i];
         return String.valueOf(cStr);
     }
+
 
     /* Escriure un string mida variable, size = nombre de bytes especifica la longitud  */
     /* String str = string a escriure.*/
@@ -199,21 +205,21 @@ public class ComUtils {
         for(int i=0;i<size;i++)
             bHeader[i]=(byte)strHeader.charAt(i);
         // Enviem la capçalera
-        dos.write(bHeader, 0, size);
+        dataOutputStream.write(bHeader, 0, size);
         // Enviem l'string writeBytes de DataOutputStrem no envia el byte més alt dels chars.
-        dos.writeBytes(str);
+        dataOutputStream.writeBytes(str);
     }
 
-    public void writeChar(String s) throws IOException{
+    public void write_char(String s) throws IOException{
         byte bStr[] = new byte[2];/*1 char = 16 bits!!!!!!!!!*/
         String str = s;
 
         bStr[0] = (byte) str.charAt(0);
 
-        dos.write(bStr, 0, 1);
+        dataOutputStream.write(bStr, 0, 1);
     }
 
-    public String readChar() throws IOException {
+    public String read_char() throws IOException {
         byte bStr[];
         char cStr[] = new char[1];
         bStr = read_bytes(1);
@@ -257,7 +263,7 @@ public class ComUtils {
 
         bStr[0] = (byte) str.charAt(0);
 
-        dos.write(bStr, 0, 1);
+        dataOutputStream.write(bStr, 0, 1);
     }
 
 
@@ -290,7 +296,7 @@ public class ComUtils {
         for(int i = numBytes; i < 4; i++)
             bStr[i] = (byte) ' ';
 
-        dos.write(bStr, 0,4);
+        dataOutputStream.write(bStr, 0,4);
     }
 
     public String readCommand3() throws IOException{
@@ -359,18 +365,17 @@ public class ComUtils {
             case "BETT":
                 write_string("BETT");
                 break;
-				
-			case "CHK":
+
+            case "CHK":
                 write_string("SRND");
                 break;
 
-			case "RPLY":
+            case "RPLY":
                 write_string("RPLY");
                 break;
-                
-              /* Cas en el que enviem la comanda Play **/
+
+            /* Cas en el que enviem la comanda Play **/
             case "INIT":
-                //System.out.println("prova a comutils");
                 write_string("INIT");
                 break;
 
@@ -383,7 +388,7 @@ public class ComUtils {
             case "CARD":
                 write_string("CARD");
                 break;
-                
+
             // Cas en el que enviem la comanda Fold
             case "WINS":
                 write_string("WINS");
@@ -426,86 +431,96 @@ public class ComUtils {
     */
 
 
-    void writeCommandTwoParametre(String stk, String int2String, String int2String0) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    void writeCommandOneParametre(String trn, String string) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
     public void writeSTRT(int a) throws IOException{
-
-    writeCommand("STRT");
-    write_space();
-    write_int32(a);
-                
+        writeCommand("STRT");
+        write_space();
+        write_int32(a);
     }
+
+    public String readSTRT() {
+        String str = "";
+
+        return str;
+    }
+
+    public void writeINIT(int a) throws IOException{
+        writeCommand("INIT");
+        write_space();
+        write_int32(a);
+    }
+
+    public String readINIT() {
+        String str = "";
+        return str;
+    }
+
     public void writeEXIT() throws IOException{
-
         writeCommand("EXIT");
-        
     }
-    public void writeCASH(int a) throws IOException{
 
+    public void writeCASH(int a) throws IOException{
         writeCommand("CASH");
         write_space();
         write_int32(a);
-                    
     }
-    public void writeHITT(String a) throws IOException{
 
+    public void writeHITT() throws IOException{
         writeCommand("HITT");
-        
     }
-    public void writeBETT(String a) throws IOException{
 
+    public void writeBETT() throws IOException{
         writeCommand("BETT");
-        
     }
-    public void writeSRND(String a) throws IOException{
 
+    public void writeSRND() throws IOException{
         writeCommand("SRND");
-        
     }
-    public void writeRPLY(String a) throws IOException{
 
+    public void writeRPLY() throws IOException{
         writeCommand("RPLY");
-        
     }
-    public void writeIDCK(String a) throws IOException{
 
+    public void writeIDCK(String rank1, String suit1, String rank2, String suit2) throws IOException{
         writeCommand("IDCK");
         write_space();
-        //FALT VER COM PASAMOS LAS CARTAS
+        write_char(rank1);
+        write_string(suit1);
         write_space();
+        write_char(rank2);
+        write_string(suit2);
     }
-    public void writeCARD(String a) throws IOException{
 
+    public void writeCARD(String rank, String suit) throws IOException{
         writeCommand("CARD");
         write_space();
-        //FALT VER COM PASAMOS LAS CARTAS
-        
+        write_char(rank);
+        write_string(suit);
     }
-    public void writeSHOW(String a) throws IOException{
 
+    public void writeSHOW(int len, String[] cardList) throws IOException{
         writeCommand("SHOW");
         write_space();
-        //FALT VER COM PASAMOS LAS CARTAS
-        
+        write_int32(len);
+        for (int i =  0; i < len; i = i + 2) {
+            write_space();
+            write_string(cardList[i]);
+            write_string(cardList[i+1]);
+        }
     }
-    public void writeWINS(String a, int b) throws IOException{
 
+    public void writeWINS(String winner, int chips) throws IOException{
         writeCommand("WINS");
         write_space();
-        writeChar(a);
+        write_char(winner);
         write_space();
-        write_int32(b);
+        write_int32(chips);
     }
 
 
 
-	public enum Endianness {
+
+
+    public enum Endianness {
         BIG_ENNDIAN,
         LITTLE_ENDIAN
     }

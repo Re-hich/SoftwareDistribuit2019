@@ -44,7 +44,8 @@ public class MenuClient {
                 int a = this.ctr.getClient().getComUtils().string2int(id);
                 this.ctr.getClient().getComUtils().writeSTRT(a);
 
-                //menuPlay(sc);
+
+                menuPlay(sc);
                 break;
 
             case "EXIT":
@@ -75,6 +76,23 @@ public class MenuClient {
         }
 
 
+
+    }
+
+
+    private void menuPlay(Scanner sc) throws IOException {
+        String str = this.ctr.getClient().getComUtils().readCommand();
+        String sp = this.ctr.getClient().getComUtils().read_space();
+        int bet = this.ctr.getClient().getComUtils().read_int32();
+
+        System.out.println("Em llegit la comanda: "+str);
+        System.out.println("Bet: "+bet);
+
+
+        System.out.println("\nIntrodueix aposta maxima");
+        String id = sc.next();
+        int a = this.ctr.getClient().getComUtils().string2int(id);
+        this.ctr.getClient().getComUtils().writeCASH(a);
 
     }
 

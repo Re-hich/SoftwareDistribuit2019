@@ -49,50 +49,25 @@ public class Servidor {
                 /* Esperem una comanda */
                 str = comUtils.readCommand();
                 System.out.println("Em llegit la comanda: "+str);
-                String sp = comUtils.read_space();
-                System.out.println(sp);
-                int id = comUtils.read_int32();
-                System.out.println("ID: "+id);
 
+                switch(str) {
+                    case "STRT":
+                        System.out.println("Game started");
 
+                        String sp = comUtils.read_space();
+                        int id = comUtils.read_int32();
+                        System.out.println("ID: "+id);
 
+                        menuSTRT();
 
+                        break;
 
-                //switch(str){
-                //    case "STRT":
-
-                if ("STRT".equals(str)) {
-                    System.out.println("Game started");
-                        /*
-                        System.out.println("Anem a començar el joc");
-                        prova = new EstatJoc(10,10);
-                        prova.setPlayers();
-
-                        char turn = prova.getTurn();
-                        comUtils.writeChar(comUtils.char2String(turn));
-                        if (turn == 'C'){
-                            System.out.println("    El servidor es player 2 i agafa segon la carta");
-                        }
-                        if (turn == 'S'){
-                            System.out.println("    El servidor es player 1 i comença");
-                        }
-
-                        prova.setCardsCS(turn);
-
-                        char card = prova.getCardClient();
-                        comUtils.writeChar(comUtils.char2String(card));
-
-                        char cardServidor = prova.getCardServidor();
-                        System.out.println("    La carta del servidor es: "+cardServidor);
-
-                        */
-
-
-                } else if ("EXIT".equals(str)) {
-                    System.out.println("Bye");
-
+                    case "EXIT":
+                        System.out.println("Exiting...");
+                        break;
 
                 }
+
 
 
 
@@ -115,6 +90,20 @@ public class Servidor {
         }
 
     } // fi del main
+
+
+    private static void menuSTRT() throws IOException {
+        comUtils.writeINIT(100);
+
+        String str = comUtils.readCommand();
+        System.out.println("Em llegit la comanda: "+str);
+        String sp = comUtils.read_space();
+        int max = comUtils.read_int32();
+        System.out.println("Max bet: "+max);
+
+
+
+    }
 
 
 }
