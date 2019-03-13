@@ -42,34 +42,34 @@ public class MenuClient {
                 System.out.println("\nIntrodueix numero de usuari");
                 String id = sc.next();
                 int a = this.ctr.getClient().getComUtils().string2int(id);
-                this.ctr.getClient().getComUtils().writeSTRT(a)
+                this.ctr.getClient().getComUtils().writeSTRT(a);
 
                 //menuPlay(sc);
                 break;
 
             case "EXIT":
-                this.ctr.getClient().getComUtils().writeEXIT()
+                this.ctr.getClient().getComUtils().writeEXIT();
                 break;
                 
             case "CASH":
                 System.out.println("\nQuantes fitxes vols canviar?");
-                String id = sc.next();
-                int a = this.ctr.getClient().getComUtils().string2int(id);
-                this.ctr.getClient().getComUtils().writeCASH(a)
+                id = sc.next();
+                a = this.ctr.getClient().getComUtils().string2int(id);
+                //this.ctr.getClient().getComUtils().writeCASH(id);
                 break;
                 
             case "HITT":
-                this.ctr.getClient().getComUtils().writeHITT()
+                //this.ctr.getClient().getComUtils().writeHITT();
                 break;
             
             case "BETT":
-                this.ctr.getClient().getComUtils().writeBETT()
+                //this.ctr.getClient().getComUtils().writeBETT();
                 break;
             case "SRND":
-                this.ctr.getClient().getComUtils().writeSRND()
+                //this.ctr.getClient().getComUtils().writeSRND();
                 break;
             case "RPLY":
-                this.ctr.getClient().getComUtils().writeRPLY()
+                //this.ctr.getClient().getComUtils().writeRPLY();
                 break;
             
         }

@@ -10,7 +10,7 @@ public class Client {
     int port;
     int stack;
     String trun;
-    ComUtilsClientv2 comUtils;
+    ComUtils comUtils;
 
     public Client(int UID,String ms, int port) {
         this.UID = UID;
@@ -27,7 +27,7 @@ public class Client {
             ms = InetAddress.getByName(maquinaServidora);
             socket = new Socket(ms,port);
             /* Obrim un flux d'entrada/sortida amb el servidor */
-            comUtils = new ComUtilsClientv2(socket);
+            comUtils = new ComUtils(socket);
             System.out.println("Se ha establecido conexion");
         }
         catch(IOException e){
@@ -38,7 +38,7 @@ public class Client {
     }
 
 
-    public ComUtilsClientv2 getComUtils() {
+    public ComUtils getComUtils() {
         return comUtils;
     }
 

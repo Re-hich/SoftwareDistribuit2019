@@ -4,7 +4,7 @@ package client;//import com.oracle.jrockit.jfr.ContentType;
 import java.io.*;
 import java.net.Socket;
 
-public class ComUtilsClientv2 {
+public class ComUtils {
 
     /* Mida d'una cadena de caracters */
     private final int STRSIZE = 40;
@@ -14,13 +14,13 @@ public class ComUtilsClientv2 {
 
 
 
-    public ComUtilsClientv2(Socket socket) throws IOException{
+    public ComUtils(Socket socket) throws IOException{
         dis = new DataInputStream(socket.getInputStream());
         dos = new DataOutputStream(socket.getOutputStream());
     }
 
 
-    public ComUtilsClientv2(File file) throws IOException{
+    public ComUtils(File file) throws IOException{
         dis = new DataInputStream(new FileInputStream(file));
         dos = new DataOutputStream(new FileOutputStream(file));
     }
@@ -434,73 +434,73 @@ public class ComUtilsClientv2 {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    pubic void writeSTRT(String a) throws IOException{
+    public void writeSTRT(int a) throws IOException{
 
     writeCommand("STRT");
     write_space();
     write_int32(a);
                 
     }
-    pubic void writeEXIT(String a) throws IOException{
+    public void writeEXIT() throws IOException{
 
         writeCommand("EXIT");
         
     }
-    pubic void writeCASH(String a) throws IOException{
+    public void writeCASH(int a) throws IOException{
 
         writeCommand("CASH");
         write_space();
         write_int32(a);
                     
     }
-    pubic void writeHITT(String a) throws IOException{
+    public void writeHITT(String a) throws IOException{
 
         writeCommand("HITT");
         
     }
-    pubic void writeBETT(String a) throws IOException{
+    public void writeBETT(String a) throws IOException{
 
         writeCommand("BETT");
         
     }
-    pubic void writeSRND(String a) throws IOException{
+    public void writeSRND(String a) throws IOException{
 
         writeCommand("SRND");
         
     }
-    pubic void writeRPLY(String a) throws IOException{
+    public void writeRPLY(String a) throws IOException{
 
         writeCommand("RPLY");
         
     }
-    pubic void writeIDCK(String a) throws IOException{
+    public void writeIDCK(String a) throws IOException{
 
         writeCommand("IDCK");
         write_space();
         //FALT VER COM PASAMOS LAS CARTAS
         write_space();
     }
-    pubic void writeCARD(String a) throws IOException{
+    public void writeCARD(String a) throws IOException{
 
         writeCommand("CARD");
         write_space();
         //FALT VER COM PASAMOS LAS CARTAS
         
     }
-    pubic void writeSHOW(String a) throws IOException{
+    public void writeSHOW(String a) throws IOException{
 
         writeCommand("SHOW");
         write_space();
         //FALT VER COM PASAMOS LAS CARTAS
         
     }
-    pubic void writeWINS(String a) throws IOException{
+    public void writeWINS(String a, int b) throws IOException{
 
         writeCommand("WINS");
         write_space();
-        writeChar(b);
+        writeChar(a);
         write_space();
-        write_int32(a);
+        write_int32(b);
     }
 
 
