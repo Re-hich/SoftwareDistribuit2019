@@ -3,6 +3,7 @@ package client;//import com.oracle.jrockit.jfr.ContentType;
 
 import java.io.*;
 import java.net.Socket;
+import java.util.ArrayList;
 
 public class ComUtils {
 
@@ -228,6 +229,19 @@ public class ComUtils {
     }
 
 
+    public byte read_byte() throws IOException{
+        byte bytes[] = read_bytes(4);
+
+        return (bytes[0]);
+    }
+
+    public void write_byte(byte a) throws IOException{
+        byte bytes[] = new byte[STRSIZE];
+
+        bytes[0] = a;
+
+        dataOutputStream.write(bytes, 0, 4);
+    }
 
     //------------- FI PRACTICA 0 ------------
 
@@ -449,9 +463,12 @@ public class ComUtils {
         write_int32(a);
     }
 
-    public String readINIT() {
-        String str = "";
-        return str;
+    public String readINIT() throws IOException {
+        String temp = readCommand();
+        String temp2 = read_space();
+        int bet = read_int32();
+
+        return int2String(bet);
     }
 
     public void writeEXIT() throws IOException{
@@ -462,6 +479,14 @@ public class ComUtils {
         writeCommand("CASH");
         write_space();
         write_int32(a);
+    }
+
+    public String readCASH() throws IOException {
+        String temp = readCommand();
+        String temp2 = read_space();
+        int max = read_int32();
+
+        return int2String(max);
     }
 
     public void writeHITT() throws IOException{
@@ -480,14 +505,28 @@ public class ComUtils {
         writeCommand("RPLY");
     }
 
-    public void writeIDCK(String rank1, String suit1, String rank2, String suit2) throws IOException{
+    public void writeIDCK(char rank1, byte suit1, char rank2, byte suit2) throws IOException{
         writeCommand("IDCK");
         write_space();
-        write_char(rank1);
-        write_string(suit1);
+        write_char(char2String(rank1));
+        write_string("Test");
         write_space();
-        write_char(rank2);
-        write_string(suit2);
+        write_char(char2String(rank2));
+        write_string("Test");
+    }
+
+    public ArrayList readIDCK() throws IOException {
+        ArrayList initialHand = new ArrayList();
+
+        String temp = readCommand();
+        String temp2 = read_space();
+        initialHand.add(read_char());
+        initialHand.add(read_byte());
+        temp2 = read_space();
+        initialHand.add(read_char());
+        initialHand.add(read_byte());
+
+        return initialHand;
     }
 
     public void writeCARD(String rank, String suit) throws IOException{
@@ -497,15 +536,43 @@ public class ComUtils {
         write_string(suit);
     }
 
-    public void writeSHOW(int len, String[] cardList) throws IOException{
+    public ArrayList readCARD() throws IOException {
+        ArrayList card = new ArrayList();
+
+        String temp = readCommand();
+        String temp2 = read_space();
+        card.add(read_char());
+        card.add(read_byte());
+
+        return card;
+    }
+
+    public void writeSHOW(int len, ArrayList cardList) throws IOException{
         writeCommand("SHOW");
         write_space();
         write_int32(len);
         for (int i =  0; i < len; i = i + 2) {
             write_space();
-            write_string(cardList[i]);
-            write_string(cardList[i+1]);
+            write_char((String) cardList.get(i));
+            write_byte((Byte) cardList.get(i+1));
         }
+    }
+
+    public ArrayList readSHOW() throws IOException {
+        ArrayList hand = new ArrayList();
+
+        //String temp = readCommand();
+        String temp2 = read_space();
+        int len = read_int32();
+
+        for (int i = 0; i < len; i = i + 2) {
+            temp2 = read_space();
+            hand.add(read_char());
+            hand.add(read_byte());
+
+        }
+
+        return hand;
     }
 
     public void writeWINS(String winner, int chips) throws IOException{
@@ -516,11 +583,27 @@ public class ComUtils {
         write_int32(chips);
     }
 
+    public ArrayList readWINS() throws IOException {
+        ArrayList win = new ArrayList();
+
+        String temp = readCommand();
+        String temp2 = read_space();
+        String winner = read_char();
+        temp2 = read_space();
+        int bet = read_int32();
+
+        win.add(winner);
+        win.add(bet);
+
+        return win;
+    }
 
 
 
 
-	public enum Endianness {
+
+
+    public enum Endianness {
         BIG_ENNDIAN,
         LITTLE_ENDIAN
     }

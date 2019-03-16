@@ -3,6 +3,8 @@ package servidor;//import com.oracle.jrockit.jfr.ContentType;
 
 import java.io.*;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ComUtils {
 
@@ -228,6 +230,21 @@ public class ComUtils {
     }
 
 
+    public byte read_byte() throws IOException{
+        byte bytes[] = read_bytes(4);
+
+        return (bytes[0]);
+    }
+
+    public void write_byte(byte a) throws IOException{
+        byte bytes[] = new byte[STRSIZE];
+
+        bytes[0] = a;
+
+        dataOutputStream.write(bytes, 0, 4);
+    }
+
+
 
     //------------- FI PRACTICA 0 ------------
 
@@ -449,9 +466,12 @@ public class ComUtils {
         write_int32(a);
     }
 
-    public String readINIT() {
-        String str = "";
-        return str;
+    public String readINIT() throws IOException {
+        String temp = readCommand();
+        String temp2 = read_space();
+        int bet = read_int32();
+
+        return int2String(bet);
     }
 
     public void writeEXIT() throws IOException{
@@ -462,6 +482,14 @@ public class ComUtils {
         writeCommand("CASH");
         write_space();
         write_int32(a);
+    }
+
+    public String readCASH() throws IOException {
+        String temp = readCommand();
+        String temp2 = read_space();
+        int max = read_int32();
+
+        return int2String(max);
     }
 
     public void writeHITT() throws IOException{
@@ -490,22 +518,56 @@ public class ComUtils {
         write_string(suit2);
     }
 
-    public void writeCARD(String rank, String suit) throws IOException{
-        writeCommand("CARD");
+    public void writeIDCK(char rank1, byte suit1, char rank2, byte suit2) throws IOException{
+        writeCommand("IDCK");
         write_space();
-        write_char(rank);
-        write_string(suit);
+        write_char(char2String(rank1));
+        write_byte(suit1);
+        write_space();
+        write_char(char2String(rank2));
+        write_byte(suit2);
     }
 
-    public void writeSHOW(int len, String[] cardList) throws IOException{
+    public void writeCARD(char rank, byte suit) throws IOException{
+        writeCommand("CARD");
+        write_space();
+        write_char(char2String(rank));
+        write_byte(suit);
+    }
+
+    public void writeSHOW(int len, ArrayList cardList) throws IOException{
         writeCommand("SHOW");
         write_space();
         write_int32(len);
         for (int i =  0; i < len; i = i + 2) {
             write_space();
-            write_string(cardList[i]);
-            write_string(cardList[i+1]);
+            write_char(char2String((Character) cardList.get(i)));
+            write_byte((Byte) cardList.get(i + 1));
         }
+    }
+
+    /*
+        A readShow treiem la funcio readCommand perque necessitem fer
+        aquest readCommand abans de saber si entrarem a la funcio readSHOW.
+        Es a dir, ens trobarem amb el cas en que tindrem un switch case on un
+        case sera el readSHOW, pero entrarem alla si ja hem llegit el la
+        commanda SHOW amb un readCommand().
+     */
+    public ArrayList readSHOW() throws IOException {
+        ArrayList hand = new ArrayList();
+
+        //String temp = readCommand();
+        String temp2 = read_space();
+        int len = read_int32();
+
+        for (int i = 0; i < len; i = i + 2) {
+            temp2 = read_space();
+            hand.add(read_char());
+            hand.add(read_byte());
+
+        }
+
+        return hand;
     }
 
     public void writeWINS(String winner, int chips) throws IOException{

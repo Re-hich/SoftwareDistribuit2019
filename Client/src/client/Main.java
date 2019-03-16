@@ -7,7 +7,7 @@ public class Main{
 
     public static void main(String[] args) throws IOException{
         try{
-            int port = 1234;
+            int port = 5000;
             MenuClient menu = new MenuClient();
             menu.iniMenu("localhost",port);
         }
