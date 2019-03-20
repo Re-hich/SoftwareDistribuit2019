@@ -9,8 +9,8 @@ public class Controller {
 
     }
 
-    public void iniClient(int IDU, String ms, int port){
-        this.client = new Client(IDU, ms, port);
+    public void iniClient( String ms, int port){
+        this.client = new Client(ms, port);
         this.client.conectarServidor();
     }
 

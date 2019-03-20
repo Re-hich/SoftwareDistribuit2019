@@ -5,15 +5,13 @@ import java.net.*;
 
 
 public class Client {
-    int UID;
     String maquinaServidora;
     int port;
     int stack;
     String trun;
     ComUtils comUtils;
 
-    public Client(int UID,String ms, int port) {
-        this.UID = UID;
+    public Client(String ms, int port) {
         this.maquinaServidora = ms;
         this.port = port;
     }

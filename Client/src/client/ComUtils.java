@@ -509,10 +509,10 @@ public class ComUtils {
         writeCommand("IDCK");
         write_space();
         write_char(char2String(rank1));
-        write_string("Test");
+        write_byte(suit1);
         write_space();
         write_char(char2String(rank2));
-        write_string("Test");
+        write_byte(suit2);
     }
 
     public ArrayList readIDCK() throws IOException {
@@ -602,11 +602,40 @@ public class ComUtils {
 
 
 
+    public static String byte2string(byte[] b){
+
+        //System.out.println(b);
+
+        String s = new String(b);
+
+        //System.out.println(s);
+
+        return s;
+
+    }
+
+    public static byte[] string2byte(String s){
+
+        //System.out.println(s);
+
+        byte[] bytes2 = s.getBytes();
+
+        //System.out.println(bytes2);
+
+        return bytes2;
+
+    }
+
+
+
 
     public enum Endianness {
         BIG_ENNDIAN,
         LITTLE_ENDIAN
     }
+
+
+
 
 
 

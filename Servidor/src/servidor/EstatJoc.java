@@ -46,9 +46,6 @@ public class EstatJoc {
 
         initCards();
 
-
-
-
     }
 
 
@@ -131,14 +128,6 @@ public class EstatJoc {
         return card;
     }
 
-    public void setInitBet(int initBet){
-        this.initBet = initBet;
-    }
-
-    public void setMaxBet(int maxBet){
-        this.maxBet = maxBet;
-    }
-
     public void addClientCard(Card card) {
         this.clientHand.add(card);
         this.clientNum = getSum(clientHand);
@@ -171,8 +160,23 @@ public class EstatJoc {
         return this.serverHand;
     }
 
-    public void doubleBet() {
-        this.initBet = this.initBet * 2;
+
+
+    public void setInitBet(int initBet){
+        this.initBet = initBet;
+        this.actualBet = initBet;
+    }
+
+    public int getInitBet() {
+        return this.initBet;
+    }
+
+    public void setMaxBet(int maxBet){
+        this.maxBet = maxBet;
+    }
+
+    public int getMaxBet() {
+        return this.maxBet;
     }
 
     public void setWinner(char winner){
@@ -185,6 +189,24 @@ public class EstatJoc {
 
     public int getBet() {
         return this.actualBet;
+    }
+
+
+    public void doubleBet() {
+        if (this.maxBet >= this.actualBet * 2) {
+            this.actualBet = this.actualBet * 2;
+        }
+    }
+
+    public ArrayList getHandSimple(ArrayList hand) {
+        ArrayList cardListSimple =  new ArrayList();
+
+        for (int i = 0; i < hand.size(); i++) {
+            card = (EstatJoc.Card) hand.get(i);
+            cardListSimple.add(Character.toString(card.rank));
+            cardListSimple.add(card.suit);
+        }
+        return cardListSimple;
     }
 
 
@@ -254,11 +276,11 @@ public class EstatJoc {
             }
         }
 
-        if (a == 1 && sum > 21) {
+        if (a >= 1 && sum > 21) {
             sum = sum - 10;
-            if (a == 2 && sum > 21) {
+            if (a >= 2 && sum > 21) {
                 sum = sum - 10;
-                if (a == 3 && sum > 21) {
+                if (a >= 3 && sum > 21) {
                     sum = sum - 10;
                     if (a == 4 && sum > 21) {
                         sum = sum - 10;

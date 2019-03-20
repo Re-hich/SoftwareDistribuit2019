@@ -535,14 +535,15 @@ public class ComUtils {
         write_byte(suit);
     }
 
+
     public void writeSHOW(int len, ArrayList cardList) throws IOException{
         writeCommand("SHOW");
         write_space();
         write_int32(len);
         for (int i =  0; i < len; i = i + 2) {
             write_space();
-            write_char(char2String((Character) cardList.get(i)));
-            write_byte((Byte) cardList.get(i + 1));
+            write_char((String) cardList.get(i));
+            write_byte((Byte) cardList.get(i+1));
         }
     }
 
@@ -576,6 +577,31 @@ public class ComUtils {
         write_char(winner);
         write_space();
         write_int32(chips);
+    }
+
+
+    public static String byte2string(byte[] b){
+
+        //System.out.println(b);
+
+        String s = new String(b);
+
+        //System.out.println(s);
+
+        return s;
+
+    }
+
+    public static byte[] string2byte(String s){
+
+        //System.out.println(s);
+
+        byte[] bytes2 = s.getBytes();
+
+        //System.out.println(bytes2);
+
+        return bytes2;
+
     }
 
 

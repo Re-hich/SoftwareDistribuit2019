@@ -37,12 +37,6 @@ public class Servidor {
             portServidor = Integer.parseInt(args[0]);
 
 
-        //Object card = estatJoc.getRandCard();
-        //System.out.println(((EstatJoc.Card) card).rank);
-        //System.out.println(((EstatJoc.Card) card).suit);
-
-
-
         try {
             /* Creem el servidor */
             serverSocket = new ServerSocket(portServidor);
@@ -132,7 +126,7 @@ public class Servidor {
         estatJoc.addServerCard((EstatJoc.Card) card4);
 
         ArrayList cardListTest =  new ArrayList();
-        cardListTest.add(((EstatJoc.Card) card3).rank);
+        cardListTest.add(Character.toString(((EstatJoc.Card) card3).rank));
         cardListTest.add(((EstatJoc.Card) card3).suit);
 
         comUtils.writeSHOW(cardListTest.size(), cardListTest);
@@ -215,15 +209,11 @@ public class Servidor {
                 estatJoc.addServerCard(card);
             }
 
-            ArrayList cardListSimple =  new ArrayList();
-            ArrayList serverHand =  estatJoc.getServerHand();
 
-            for (int i = 0; i < serverHand.size(); i++) {
-                card = (EstatJoc.Card) serverHand.get(i);
-                cardListSimple.add(card.rank);
-                cardListSimple.add(card.suit);
-            }
 
+
+            ArrayList cardListSimple =  estatJoc.getHandSimple(estatJoc.getServerHand());
+            comUtils.writeSHOW(cardListSimple.size(), cardListSimple);
             System.out.println(cardListSimple);
             System.out.println(estatJoc.getServerNum());
 

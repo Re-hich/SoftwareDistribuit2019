@@ -22,18 +22,14 @@ public class MenuClient {
 
     public void iniMenu(String ms, int port) throws IOException{
         Scanner sc = new Scanner(System.in);
-        int IDU;
-
-        System.out.println("Introduce tu numero de Usuario: ");
-        IDU = sc.nextInt();
 
         MenuClient m = new MenuClient();
-        m.showMenu(sc,IDU,ms,port);
+        m.showMenu(sc,ms,port);
     }
 
 
-    private void showMenu(Scanner sc,int IDU, String ms, int port) throws IOException{
-       this.ctr.iniClient(IDU, ms, port);
+    private void showMenu(Scanner sc, String ms, int port) throws IOException{
+       this.ctr.iniClient(ms, port);
 
 
         System.out.println("\nComanda a enviar: STRT/EXIT");
@@ -143,7 +139,7 @@ public class MenuClient {
                 int sum2 = getSum(clientHand);
                 System.out.println("   Suma actual es: "+sum2);
                 this.ctr.getClient().getComUtils().writeSHOW(clientHand.size(), clientHand);
-                endMenu(sc);
+                showMenu(sc);
                 break;
 
             case "SRND":
@@ -160,11 +156,11 @@ public class MenuClient {
 
         if ( winner == 0) {
             System.out.println("\n\nCLIENT WINS");
-            System.out.println("You lose: "+wins.get(1));
+            System.out.println("You win: "+wins.get(1));
 
         } else  if ( winner == 1) {
             System.out.println("\n\nSERVER WINS");
-            System.out.println("You win: "+wins.get(1));
+            System.out.println("You lose: "+wins.get(1));
 
         } else  if ( winner == 2) {
             System.out.println("\n\nTIE");
@@ -204,14 +200,21 @@ public class MenuClient {
                 System.out.println("Client hand: ");
                 showHand(clientHand);
                 this.ctr.getClient().getComUtils().writeSHOW(clientHand.size(), clientHand);
-                endMenu(sc);
+                showMenu(sc);
                 break;
 
         }
     }
 
-    private void showMenu(Scanner sc) {
-
+    private void showMenu(Scanner sc) throws IOException {
+        System.out.println("\nla banca mostra: ");
+        String temp = this.ctr.getClient().getComUtils().readCommand();
+        ArrayList show = this.ctr.getClient().getComUtils().readSHOW();
+        showHand(show);
+        System.out.println("Server final number: ");
+        int sum2 = getSum(show);
+        System.out.println("   Suma actual es: "+sum2);
+        endMenu(sc);
     }
 
 
