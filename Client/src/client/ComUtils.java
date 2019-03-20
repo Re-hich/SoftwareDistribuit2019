@@ -8,7 +8,7 @@ import java.util.ArrayList;
 public class ComUtils {
 
     /* Mida d'una cadena de caracters */
-    private final int STRSIZE = 40;
+    private final int STRSIZE = 4;
     /* Objectes per escriure i llegir dades */
     private DataInputStream dataInputStream;
     private DataOutputStream dataOutputStream;
@@ -521,10 +521,10 @@ public class ComUtils {
         String temp = readCommand();
         String temp2 = read_space();
         initialHand.add(read_char());
-        initialHand.add(read_byte());
+        initialHand.add(read_char());
         temp2 = read_space();
         initialHand.add(read_char());
-        initialHand.add(read_byte());
+        initialHand.add(read_char());
 
         return initialHand;
     }
@@ -542,7 +542,7 @@ public class ComUtils {
         String temp = readCommand();
         String temp2 = read_space();
         card.add(read_char());
-        card.add(read_byte());
+        card.add(read_char());
 
         return card;
     }
@@ -550,25 +550,28 @@ public class ComUtils {
     public void writeSHOW(int len, ArrayList cardList) throws IOException{
         writeCommand("SHOW");
         write_space();
-        write_int32(len);
+        String lenc= String.valueOf(len);
+        write_char(lenc);
         for (int i =  0; i < len; i = i + 2) {
             write_space();
             write_char((String) cardList.get(i));
-            write_byte((Byte) cardList.get(i+1));
+            write_char((String) cardList.get(i+1));
         }
     }
 
     public ArrayList readSHOW() throws IOException {
+
         ArrayList hand = new ArrayList();
 
         //String temp = readCommand();
         String temp2 = read_space();
-        int len = read_int32();
+        int len = Integer.parseInt(read_char());
 
         for (int i = 0; i < len; i = i + 2) {
             temp2 = read_space();
             hand.add(read_char());
-            hand.add(read_byte());
+
+            hand.add(read_char());
 
         }
 

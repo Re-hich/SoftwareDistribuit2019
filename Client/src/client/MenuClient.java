@@ -150,8 +150,9 @@ public class MenuClient {
     }
 
     private void endMenu(Scanner sc) throws IOException {
+        System.out.println("\n\nTEST");
         ArrayList wins = this.ctr.getClient().getComUtils().readWINS();
-
+        System.out.println("\n\nTEST");
         int winner = this.ctr.getClient().getComUtils().string2int((String) wins.get(0));
 
         if ( winner == 0) {
@@ -200,7 +201,7 @@ public class MenuClient {
                 System.out.println("Client hand: ");
                 showHand(clientHand);
                 this.ctr.getClient().getComUtils().writeSHOW(clientHand.size(), clientHand);
-                showMenu(sc);
+                endMenu(sc);
                 break;
 
         }
@@ -209,6 +210,7 @@ public class MenuClient {
     private void showMenu(Scanner sc) throws IOException {
         System.out.println("\nla banca mostra: ");
         String temp = this.ctr.getClient().getComUtils().readCommand();
+        System.out.println("\nla banca mostra: ");
         ArrayList show = this.ctr.getClient().getComUtils().readSHOW();
         showHand(show);
         System.out.println("Server final number: ");
